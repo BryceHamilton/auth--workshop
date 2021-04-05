@@ -33,6 +33,25 @@ const useStyles = makeStyles((theme) => ({
 export function SignUp() {
   const classes = useStyles();
 
+  const [form, setForm] = React.useState({});
+
+  const onChange = (name) => ({ target: { value } }) =>
+    setForm((form) => ({ ...form, [name]: value }));
+
+  const onSubmit = () => {
+    console.log(form);
+    const url = 'http://localhost:4000/auth/register';
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(form),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+      });
+  };
+
   return (
     <Container component='main' maxWidth='xs'>
       <CssBaseline />
@@ -49,10 +68,11 @@ export function SignUp() {
             margin='normal'
             required
             fullWidth
-            id='name'
-            label='Name'
-            name='name'
-            autoComplete='name'
+            id='username'
+            label='Username'
+            name='username'
+            onChange={onChange('username')}
+            autoComplete='username'
             autoFocus
           />
           <TextField
@@ -61,6 +81,7 @@ export function SignUp() {
             required
             fullWidth
             id='email'
+            onChange={onChange('email')}
             label='Email Address'
             name='email'
             autoComplete='email'
@@ -71,6 +92,7 @@ export function SignUp() {
             required
             fullWidth
             name='password'
+            onChange={onChange('password')}
             label='Password'
             type='password'
             id='password'
@@ -78,7 +100,7 @@ export function SignUp() {
           />
 
           <Button
-            type='submit'
+            onClick={onSubmit}
             fullWidth
             variant='contained'
             color='primary'

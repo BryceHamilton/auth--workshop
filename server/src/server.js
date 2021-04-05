@@ -1,7 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const mongoose = require('mongoose');
-const authRoutes = require('./api/auth/auth-routes');
+const authRoutes = require('./routes/auth-routes');
 
 require('dotenv').config();
 
@@ -18,8 +19,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => console.log('db connected'));
 
 express()
+  .use(cors({ origin: 'http://localhost:3000' }))
   .use(morgan('dev'))
-  .use(express.urlencoded({ extended: false }))
+  .use(express.urlencoded({ extended: true }))
   .use(express.json())
 
   .use('/auth', authRoutes)

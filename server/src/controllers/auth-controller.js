@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const User = require('../user-model');
+const User = require('../models/User');
 
 require('dotenv').config();
 
@@ -30,7 +30,13 @@ const register = async (req, res) => {
     const savedUser = await newUser.save();
     if (!savedUser) throw Error('Something went wrong saving the user');
 
+    const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
+      expiresIn: 3600,
+    });
+    if (!token) throw Error('Couldnt sign the token');
+
     res.status(201).json({
+      token,
       message: 'User successfully registered',
       user: {
         id: savedUser.id,
