@@ -33,14 +33,14 @@ const useStyles = makeStyles((theme) => ({
 export function SignUp() {
   const classes = useStyles();
 
+  const [error, setError] = React.useState('');
   const [form, setForm] = React.useState({});
 
   const onChange = (name) => ({ target: { value } }) =>
     setForm((form) => ({ ...form, [name]: value }));
 
   const onSubmit = () => {
-    console.log(form);
-    const url = 'http://localhost:4000/auth/register';
+    const url = 'http://localhost:4000/';
     fetch(url, {
       method: 'POST',
       body: JSON.stringify(form),
@@ -49,6 +49,9 @@ export function SignUp() {
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
+        if (json.status === 500) {
+          setError(json.message);
+        }
       });
   };
 
@@ -98,7 +101,17 @@ export function SignUp() {
             id='password'
             autoComplete='current-password'
           />
-
+          {error && (
+            <div
+              style={{
+                color: 'red',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <span>{error}</span>
+            </div>
+          )}
           <Button
             onClick={onSubmit}
             fullWidth
